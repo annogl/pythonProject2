@@ -13,7 +13,8 @@ def reading_kafka_file():
     env.add_jars("file:/home/students/s461011/PycharmProjects/pythonProject2/flink-sql-connector-kafka-1.15.0.jar")
 
     type_info = Types.ROW_NAMED(["Bitcoin", "eth", "usd", "eur", "gbp", "pln"],
-                                [Types.DOUBLE(), Types.DOUBLE(), Types.DOUBLE(), Types.DOUBLE(), Types.DOUBLE(), Types.DOUBLE()])
+                                [Types.DOUBLE(), Types.DOUBLE(), Types.DOUBLE(), Types.DOUBLE(), Types.DOUBLE(),
+                                 Types.DOUBLE()])
 
     deserialization_schema = JsonRowDeserializationSchema.builder().type_info(type_info).build()
 
@@ -27,13 +28,14 @@ def reading_kafka_file():
 
     ds = env.add_source(kafkaSource).assign_timestamps_and_watermarks(
         WatermarkStrategy.for_bounded_out_of_orderness(Duration.of_seconds(300)))
-    #ds.print()
+    ds.print()
 
     # convert a DataStream to a Table
     table = t_env.from_data_stream(ds)
 
-    #print('\ntable data')
-    #print(table.print_schema())
+    print('\n table data')
+    print(table.print_schema())
+
     env.execute()
 
     return table
